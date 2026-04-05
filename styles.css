@@ -214,17 +214,18 @@ section {
     align-items: center;
 }
 
-.profile-placeholder {
+.profile-img {
     width: 280px;
     height: 280px;
-    background: #4a90e2;
+    object-fit: cover;
     border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3.5rem;
-    color: white;
     box-shadow: 0 5px 15px rgba(74, 144, 226, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
 }
 
 @keyframes float {
