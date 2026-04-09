@@ -154,6 +154,11 @@ const portfolioData = {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize EmailJS
+    emailjs.init({
+        publicKey: 'PkV8LJvLXD2SuFz12'
+    });
+    
     // Initialize animations
     initAnimations();
     
@@ -303,21 +308,38 @@ function simulateFormSubmission(name, email, subject, message) {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
     submitBtn.disabled = true;
     
-    // Simulate API call
-    setTimeout(() => {
-        // Reset form
-        contactForm.reset();
-        
-        // Show success message
-        showFormMessage('Thank you for your message! I\'ll get back to you soon.', 'success');
-        
-        // Reset button
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        
-        // Log the submission (in real implementation, this would be sent to a server)
-        console.log('Form submitted:', { name, email, subject, message });
-    }, 2000);
+    // Prepare email parameters
+    const templateParams = {
+        to_email: 'lawrenzjoshmamparo@gmail.com',
+        from_name: name,
+        from_email: email,
+        subject: subject,
+        message: message
+    };
+    
+    // Send email using EmailJS
+    emailjs.send('service_7wxnmtm', 'template_contact_form', templateParams)
+        .then(function(response) {
+            console.log('Email sent successfully:', response);
+            
+            // Reset form
+            contactForm.reset();
+            
+            // Show success message
+            showFormMessage('Thank you for your message! I\'ll get back to you soon.', 'success');
+            
+            // Reset button
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        })
+        .catch(function(error) {
+            console.error('Email delivery failed:', error);
+            showFormMessage('Failed to send message. Please try again or contact directly.', 'error');
+            
+            // Reset button
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
 }
 
 // Portfolio modal
