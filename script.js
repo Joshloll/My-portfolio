@@ -7,9 +7,58 @@ const floatingBtn = document.getElementById('floating-btn');
 const floatingOptions = document.getElementById('floating-options');
 const contactForm = document.getElementById('contact-form');
 const formMessage = document.getElementById('form-message');
-const portfolioModal = document.getElementById('portfolio-modal');
+const skillsModal = document.getElementById('skills-modal');
 const modalBody = document.getElementById('modal-body');
 const closeModal = document.querySelector('.close-modal');
+
+// Skills & Tools Data
+const skillsData = {
+    'video1': {
+        title: 'Social Media Design',
+        type: 'video',
+        description: 'Professional social media content creation with engaging visuals and effective branding strategies.',
+        tools: ['Canva', 'Adobe Creative Suite', 'Content Strategy', 'Brand Consistency'],
+        videoUrl: 'https://example.com/video1.mp4' // Replace with actual video URL
+    },
+    'video2': {
+        title: 'Data Visualization',
+        type: 'video',
+        description: 'Creating clear and informative data presentations that help businesses make informed decisions.',
+        tools: ['Excel', 'Google Sheets', 'Data Analysis', 'Visual Reports'],
+        videoUrl: 'https://example.com/video2.mp4' // Replace with actual video URL
+    },
+    'video3': {
+        title: 'Web Development',
+        type: 'video',
+        description: 'Building responsive and user-friendly websites with modern design principles and functionality.',
+        tools: ['HTML/CSS/JavaScript', 'Responsive Design', 'User Experience', 'Modern Frameworks'],
+        videoUrl: 'https://example.com/video3.mp4' // Replace with actual video URL
+    },
+    'project1': {
+        title: 'Mobile App Design',
+        type: 'project',
+        description: 'Modern mobile application interface design with focus on user experience and functionality.',
+        languages: ['Figma', 'Adobe XD', 'React Native', 'UI/UX Design'],
+        imageUrl: 'https://example.com/project1.jpg', // Replace with actual image URL
+        projectUrl: 'https://example.com/mobile-app' // Replace with actual project URL
+    },
+    'project2': {
+        title: 'Database Management',
+        type: 'project',
+        description: 'Efficient database design and management systems for organized data storage and retrieval.',
+        languages: ['SQL', 'NoSQL', 'Python', 'Data Optimization'],
+        imageUrl: 'https://example.com/project2.jpg', // Replace with actual image URL
+        projectUrl: 'https://example.com/database-project' // Replace with actual project URL
+    },
+    'project3': {
+        title: 'Brand Identity',
+        type: 'project',
+        description: 'Complete brand identity packages including logos, color schemes, and marketing materials.',
+        languages: ['Adobe Illustrator', 'Photoshop', 'Brand Guidelines', 'Marketing Assets'],
+        imageUrl: 'https://example.com/project3.jpg', // Replace with actual image URL
+        projectUrl: 'https://example.com/brand-project' // Replace with actual project URL
+    }
+};
 
 // Portfolio Data
 const portfolioData = {
@@ -176,6 +225,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize portfolio modal
     initPortfolioModal();
+    
+    // Initialize skills modal
+    initSkillsModal();
     
     // Initialize skill progress bars
     initSkillBars();
@@ -583,6 +635,100 @@ document.addEventListener('keydown', function(e) {
         navToggle.classList.remove('active');
     }
 });
+
+// Skills Modal functionality
+function initSkillsModal() {
+    // Add click event listeners to video and project cards
+    const videoCards = document.querySelectorAll('.video-card');
+    const projectCards = document.querySelectorAll('.project-card');
+    
+    videoCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const videoId = this.getAttribute('data-video');
+            openSkillsModal(videoId);
+        });
+    });
+    
+    projectCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const projectId = this.getAttribute('data-project');
+            openSkillsModal(projectId);
+        });
+    });
+    
+    // Close modal when clicking the close button
+    if (closeModal) {
+        closeModal.addEventListener('click', closeSkillsModal);
+    }
+    
+    // Close modal when clicking outside
+    skillsModal.addEventListener('click', function(e) {
+        if (e.target === skillsModal) {
+            closeSkillsModal();
+        }
+    });
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && skillsModal.style.display === 'block') {
+            closeSkillsModal();
+        }
+    });
+}
+
+function openSkillsModal(id) {
+    const data = skillsData[id];
+    if (!data) return;
+    
+    let modalContent = '';
+    
+    if (data.type === 'video') {
+        modalContent = `
+            <div class="modal-video-container">
+                <video class="modal-video" controls autoplay muted>
+                    <source src="${data.videoUrl}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="modal-video-info">
+                    <h3>${data.title}</h3>
+                    <p>${data.description}</p>
+                    <div class="modal-tools">
+                        ${data.tools.map(tool => `<span class="modal-tool">${tool}</span>`).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (data.type === 'project') {
+        modalContent = `
+            <div class="modal-project-container">
+                <img src="${data.imageUrl}" alt="${data.title}" class="modal-project-image" onclick="window.open('${data.projectUrl}', '_blank')">
+                <div class="modal-project-info">
+                    <h3>${data.title}</h3>
+                    <p>${data.description}</p>
+                    <div class="modal-languages">
+                        ${data.languages.map(lang => `<span class="modal-language">${lang}</span>`).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    modalBody.innerHTML = modalContent;
+    skillsModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSkillsModal() {
+    skillsModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    
+    // Stop any playing videos
+    const videos = skillsModal.querySelectorAll('video');
+    videos.forEach(video => {
+        video.pause();
+        video.currentTime = 0;
+    });
+}
 
 // Add print styles support
 window.addEventListener('beforeprint', () => {
